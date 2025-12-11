@@ -1,5 +1,14 @@
+<p style="color: green"><%= notice %></p>
+ 
 <h1><%= @post.title %></h1>
 <p><%= @post.body %></p>
+ 
+<div>
+  <%= link_to "Edit this post", edit_post_path(@post) %> |
+  <%= link_to "Back to posts", posts_path %>
+  
+  <%= button_to "Destroy this post", @post, method: :delete, form: {style: 'display:inline-block; margin-left: 10px;'} %>
+</div>
  
 <hr>
  
@@ -8,6 +17,9 @@
   <p>
     <strong><%= comment.author_name %>:</strong>
     <%= comment.content %>
+    <small>
+      <%= link_to "Delete", [@post, comment], data: { turbo_method: :delete, turbo_confirm: "Sure?" }, style: "color: red" %>
+    </small>
   </p>
 <% end %>
  
@@ -25,7 +37,4 @@
     <%= form.submit "Post Comment" %>
   </p>
 <% end %>
- 
-<br>
-<%= link_to 'Back to Posts', posts_path %>
  

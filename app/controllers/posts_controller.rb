@@ -1,36 +1,55 @@
 class PostsController < ApplicationController
+  # This helper ensures we find the post before edit, update, show, or destroy
+  before_action :set_post, only: %i[ show edit update destroy ]
+ 
   def index
     @posts = Post.all
   end
  
   def show
-    @post = Post.find(params[:id])
+    # @post is already set by the before_action
   end
  
   def new
     @post = Post.new
   end
  
+  def edit
+    # @post is already set by the before_action
+  end
+ 
   def create
     @post = Post.new(post_params)
  
     if @post.save
-      # SUCCESS: This line redirects to app/views/posts/show.html.erb
-      redirect_to @post, notice: 'Post was successfully created.'
+      redirect_to @post, notice: "Post was successfully created."
     else
-      # FAILURE: Stays on the new page so you can fix errors
       render :new, status: :unprocessable_entity
     end
   end
  
-  # ... add edit, update, destroy actions here as needed ...
+  def update
+    if @post.update(post_params)
+      redirect_to @post, notice: "Post was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+ 
+  def destroy
+    @post.destroy
+    redirect_to posts_url, notice: "Post was successfully destroyed."
+  end
  
   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_post
+      @post = Post.find(params[:id])
+    end
  
-  # Strong Parameters (Security)
-  def post_params
-    params.require(:post).permit(:title, :body)
-  end
+    # Only allow a list of trusted parameters through.
+    def post_params
+      params.require(:post).permit(:title, :body)
+    end
 end
-
  
